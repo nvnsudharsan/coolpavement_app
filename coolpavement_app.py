@@ -1,0 +1,175 @@
+import plotly.graph_objects as go
+import pandas as pd
+import os
+import streamlit as st
+import requests
+import numpy as np
+
+def find_and_concat_excel_files(folder_path):
+    files = [f for f in os.listdir(folder_path) if f.endswith('.xlsx') or f.endswith('.xls')]
+    grouped_files = {}
+    for file in files:
+        key = file[:8]
+        if key in grouped_files:
+            grouped_files[key].append(file)
+        else:
+            grouped_files[key] = [file]
+    
+    for key, file_list in grouped_files.items():
+        dataframes = [pd.read_excel(os.path.join(folder_path, file)) for file in file_list]
+        if not all(df.columns.equals(dataframes[0].columns) for df in dataframes):
+            continue
+        concatenated_df = pd.concat(dataframes)
+        concatenated_df['Date-Time (CDT)'] = pd.to_datetime(concatenated_df['Date-Time (CDT)'])
+        concatenated_df.set_index('Date-Time (CDT)', inplace=True)
+        concatenated_df = concatenated_df.groupby(concatenated_df.index).mean()
+        globals()['s' + key] = concatenated_df
+
+folder_path = '/Users/geo-ns36752/Documents/GitHub/coolpavement_app/measurements'
+find_and_concat_excel_files(folder_path)
+
+calibration_corrections = {
+    's21471965': -0.014904143,
+    's21479990': -0.093339073,
+    's21479991': 0.000675938,
+    's21479993': -0.035137113,
+    's21479994': 0.0,
+    's21479995': -0.027288099,
+    's21479998': 0.262262291
+}
+
+location_corrections = {
+    's21479990': (0.9982, 0.0457),
+    's21479991': (0.9908, 0.2413),
+    's21479993': (0.9393, 1.7208),
+    's21479994': (0.9996, 0.0111),
+    's21479995': (0.9998, -0.046),
+    's21479998': (0.9944, -0.1216),
+    's21471965': (1.0, 0.0)
+}
+
+locations = {
+    's21471965': 'control',
+    's21479990': 'cool',
+    's21479991': 'control',
+    's21479993': 'cool',
+    's21479994': 'cool',
+    's21479995': 'control',
+    's21479998': 'cool'
+}
+
+start_time = pd.to_datetime('2024-06-25 17:00:00')
+
+for var_name in calibration_corrections.keys():
+    if var_name in globals():
+        df = globals()[var_name]
+        df['Temperature'] = df['Temperature (°C) '] + calibration_corrections[var_name]
+        df['Temperature_c'] = location_corrections[var_name][0] * df['Temperature'] + location_corrections[var_name][1]
+        df['Temperature'] = df['Temperature'] * 9 / 5 + 32
+        df['Temperature_c'] = df['Temperature_c'] * 9 / 5 + 32
+        df['Location'] = locations[var_name]
+        df = df[df.index >= start_time]
+        df = df.resample('15T').mean()
+        globals()[var_name] = df
+
+locations_avg = {}
+for location in set(locations.values()):
+    temperature_dfs = [globals()[var_name]['Temperature'] for var_name, loc in locations.items() if loc == location]
+    temperature_c_dfs = [globals()[var_name]['Temperature_c'] for var_name, loc in locations.items() if loc == location]
+    if temperature_dfs:
+        avg_temp = pd.concat(temperature_dfs, axis=1).mean(axis=1)
+        locations_avg[f"{location}_temperature"] = pd.DataFrame(avg_temp, columns=['Temperature (°F)'])
+    if temperature_c_dfs:
+        avg_temp_c = pd.concat(temperature_c_dfs, axis=1).mean(axis=1)
+        locations_avg[f"{location}_temperature_c"] = pd.DataFrame(avg_temp_c, columns=['Calibrated Temperature (°F)'])
+
+# Calculate the difference between control and cool temperatures
+locations_avg['temperature_difference'] = locations_avg['control_temperature']['Temperature (°F)'] - locations_avg['cool_temperature']['Temperature (°F)']
+locations_avg['temperature_c_difference'] = locations_avg['control_temperature_c']['Calibrated Temperature (°F)'] - locations_avg['cool_temperature_c']['Calibrated Temperature (°F)']
+
+def get_sun_rise_set_time(date):
+    response = requests.get('https://api.sunrise-sunset.org/json', params={
+        'lat': 30.382749,
+        'lng': -97.649183,
+        'formatted': 0,
+        'date': date})
+    data = response.json()
+    sunrise_time = pd.to_datetime(data['results']['sunrise']).tz_convert('US/Central')
+    sunset_time = pd.to_datetime(data['results']['sunset']).tz_convert('US/Central')
+    return sunrise_time, sunset_time
+
+# Streamlit App
+st.title("Cool Pavement Project at Austin")
+
+# Date range selector
+min_date = locations_avg['control_temperature'].index.min()
+max_date = locations_avg['control_temperature'].index.max()
+default_start = min_date
+default_end = default_start + pd.DateOffset(weeks=1)
+
+date_range = st.date_input("Select date range:", [default_start, default_end])
+
+if len(date_range) == 2:
+    start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
+else:
+    start_date, end_date = default_start, default_end
+
+# Filter data based on selected date range
+for key in ['control_temperature', 'cool_temperature', 'control_temperature_c', 'cool_temperature_c', 'temperature_difference', 'temperature_c_difference']:
+    locations_avg[key] = locations_avg[key][(locations_avg[key].index >= start_date) & (locations_avg[key].index <= end_date)]
+
+fig1 = go.Figure()
+fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Control',
+                         line=dict(color='#FF0000', width=4, dash='dash')))
+fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Cool Pavement',
+                         line=dict(color='#636EF4', width=4)))
+fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Control - Cool Pavement)',
+                         line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
+fig1.update_layout(
+    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(color="Black")),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(color="Black"), overlaying="y", side="right")
+)
+
+fig2 = go.Figure()
+fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Control',
+                         line=dict(color='#FF0000', width=4, dash='dash')))
+fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Cool Pavement',
+                         line=dict(color='#636EF4', width=4)))
+fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Control - Cool Pavement)',
+                         line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
+fig2.update_layout(
+    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(color="Black")),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(color="Black"), overlaying="y", side="right")
+)
+
+daily_profile = locations_avg['control_temperature']
+date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
+for i, date in enumerate(date_list):
+    sunrise_time, sunset_time = get_sun_rise_set_time(date)
+    fig1.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
+    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
+    if i == 0:
+        fig1.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    if i != len(date_list) - 1:
+        next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
+        fig1.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    else:
+        fig1.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+
+st.subheader("Control and Cool Pavement Temperatures")
+st.write('Toggle on or off the lines by clicking on the legends.')
+st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
+st.plotly_chart(fig1, use_container_width=True)
+
+st.subheader("Control and Cool Pavement Temperatures Calibrated for Location")
+st.plotly_chart(fig2, use_container_width=True)
+
+# Embed Google Earth link
+st.subheader("Cool Pavement and Sensor Locations")
+google_earth_link = "/Users/geo-ns36752/Documents/GitHub/coolpavement_app/location.png"  # Replace with your actual link
+st.image(google_earth_link)
