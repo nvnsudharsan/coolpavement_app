@@ -25,7 +25,7 @@ def find_and_concat_excel_files(folder_path):
         concatenated_df = concatenated_df.groupby(concatenated_df.index).mean()
         globals()['s' + key] = concatenated_df
 
-folder_path = '/Users/geo-ns36752/Documents/GitHub/coolpavement_app/measurements'
+folder_path = '/measurements'
 find_and_concat_excel_files(folder_path)
 
 calibration_corrections = {
@@ -171,5 +171,5 @@ st.plotly_chart(fig2, use_container_width=True)
 
 # Embed Google Earth link
 st.subheader("Cool Pavement and Sensor Locations")
-google_earth_link = "/Users/geo-ns36752/Documents/GitHub/coolpavement_app/location.png"  # Replace with your actual link
+google_earth_link = "/location.png"  # Replace with your actual link
 st.image(google_earth_link)
