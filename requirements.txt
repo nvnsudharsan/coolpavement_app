@@ -1,8 +1,10 @@
-streamlit
-plotly
-numpy
-matplotlib
 pandas
+plotly
+streamlit
+requests
+numpy
+openpyxl
+
 
 
 
