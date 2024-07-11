@@ -146,7 +146,7 @@ fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locati
                          line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
 fig1.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-    yaxis=dict(title="Temperature (°F)", titlefont=dict(color="#FF0000")),
+    yaxis=dict(title="Temperature (°F)", titlefont=dict(color="black")),
     yaxis2=dict(title="Difference (°F)", titlefont=dict(color="#00CC96"), overlaying="y", side="right")
 )
 
@@ -160,7 +160,7 @@ fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=loca
                          line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-    yaxis=dict(title="Calibrated Temperature (°F)", titlefont=dict(color="#FF0000")),
+    yaxis=dict(title="Calibrated Temperature (°F)", titlefont=dict(color="black")),
     yaxis2=dict(title="Difference (°F)", titlefont=dict(color="#00CC96"), overlaying="y", side="right")
 )
 
@@ -184,6 +184,8 @@ for i, date in enumerate(date_list):
 
 # Display plots in Streamlit app
 st.subheader("Control and Cool Pavement Temperatures")
+st.write('Toggle on or off the lines by clicking on the legends.')
+st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
 st.plotly_chart(fig1, use_container_width=True)
 
 st.subheader("Control and Cool Pavement Temperatures Calibrated for Location")
