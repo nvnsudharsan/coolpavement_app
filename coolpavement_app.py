@@ -25,7 +25,7 @@ def find_and_concat_excel_files(folder_path):
         concatenated_df = concatenated_df.groupby(concatenated_df.index).mean()
         globals()['s' + key] = concatenated_df
 
-folder_path = '/measurements'
+folder_path = 'https://github.com/nvnsudharsan/coolpavement_app/tree/80a423b2687b1a6d9516fb81ab9b3a0e799cb421/measurements'
 find_and_concat_excel_files(folder_path)
 
 calibration_corrections = {
