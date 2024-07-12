@@ -136,32 +136,51 @@ else:
 for key in ['control_temperature', 'cool_temperature', 'control_temperature_c', 'cool_temperature_c', 'temperature_difference', 'temperature_c_difference']:
     locations_avg[key] = locations_avg[key][(locations_avg[key].index >= start_date) & (locations_avg[key].index <= end_date)]
 
+# Default colors
+default_colors = {
+    'control': '#FF0000',
+    'cool': '#636EF4',
+    'difference': '#00CC96'
+}
+
+# Color selection
+col1, col2, col3 = st.columns(3)
+with col1:
+    control_color = st.color_picker("Reference", default_colors['control'])
+with col2:
+    cool_color = st.color_picker("Cool Pavement", default_colors['cool'])
+with col3:
+    difference_color = st.color_picker("Difference", default_colors['difference'])
+
+
 # Plot control and cool pavement temperatures
 fig1 = go.Figure()
-fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Control',
-                         line=dict(color='#FF0000', width=4, dash='dash')))
+fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
+                         line=dict(color=control_color, width=4, dash='dash')))
 fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Cool Pavement',
-                         line=dict(color='#636EF4', width=4)))
-fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Control - Cool Pavement)',
-                         line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
+                         line=dict(color=cool_color, width=4)))
+fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Reference - Cool Pavement)',
+                         line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig1.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(color="black")),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(color="#00CC96"), overlaying="y", side="right")
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
+    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="#00CC96"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
 # Plot calibrated control and cool pavement temperatures
 fig2 = go.Figure()
-fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Control',
-                         line=dict(color='#FF0000', width=4, dash='dash')))
+fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Reference (Normal Pavement)',
+                         line=dict(color=control_color, width=4, dash='dash')))
 fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Cool Pavement',
-                         line=dict(color='#636EF4', width=4)))
-fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Control - Cool Pavement)',
-                         line=dict(color='#00CC96', width=4, dash='dot'), yaxis="y2"))
+                         line=dict(color=cool_color, width=4)))
+fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Reference - Cool Pavement)',
+                         line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(color="black")),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(color="#00CC96"), overlaying="y", side="right")
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
+    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="#00CC96"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
 # Add sunrise and sunset times to the plots
