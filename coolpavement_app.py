@@ -165,7 +165,7 @@ fig1.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
     xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="#00CC96"), overlaying="y", side="right", tickfont=dict(size=18))
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
 # Plot calibrated control and cool pavement temperatures
@@ -180,7 +180,7 @@ fig2.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
     xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="#00CC96"), overlaying="y", side="right", tickfont=dict(size=18))
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
 # Add sunrise and sunset times to the plots
