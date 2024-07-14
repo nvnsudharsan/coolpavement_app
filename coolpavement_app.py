@@ -140,7 +140,7 @@ for key in ['control_temperature', 'cool_temperature', 'control_temperature_c', 
 default_colors = {
     'control': '#FF0000',
     'cool': '#636EF4',
-    'difference': '#00CC96'
+    'difference': '#000000'
 }
 
 # Color selection
@@ -156,9 +156,9 @@ with col3:
 # Plot control and cool pavement temperatures
 fig1 = go.Figure()
 fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
-                         line=dict(color=control_color, width=4, dash='dash')))
+                         line=dict(color=control_color, width=3, dash='dash')))
 fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Cool Pavement',
-                         line=dict(color=cool_color, width=4)))
+                         line=dict(color=cool_color, width=3)))
 fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Reference - Cool Pavement)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig1.update_layout(
@@ -171,9 +171,9 @@ fig1.update_layout(
 # Plot calibrated control and cool pavement temperatures
 fig2 = go.Figure()
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Reference (Normal Pavement)',
-                         line=dict(color=control_color, width=4, dash='dash')))
+                         line=dict(color=control_color, width=3, dash='dash')))
 fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Cool Pavement',
-                         line=dict(color=cool_color, width=4)))
+                         line=dict(color=cool_color, width=3)))
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Reference - Cool Pavement)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
