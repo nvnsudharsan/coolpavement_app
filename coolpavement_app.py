@@ -123,9 +123,10 @@ st.title("Cool Pavement Project at Austin")
 min_date = locations_avg['control_temperature'].index.min()
 max_date = locations_avg['control_temperature'].index.max()
 default_start = min_date
-default_end = default_start + pd.DateOffset(weeks=1)
+default_end = default_start + pd.DateOffset(weeks=2)
 
 date_range = st.date_input("Select date range:", [default_start, default_end])
+st.write(f'Data available from {min_date} to {max_date}')
 
 if len(date_range) == 2:
     start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
