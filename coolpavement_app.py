@@ -163,10 +163,10 @@ fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations
 fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Treatment site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig1.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=20)),
-    xaxis=dict(titlefont=dict(size=26), tickfont=dict(size=18)),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=26, color="black"), tickfont=dict(size=18)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=26, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
+    xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
 )
 
 # Plot calibrated control and cool pavement temperatures
@@ -178,10 +178,10 @@ fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locatio
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=20)),
-    xaxis=dict(titlefont=dict(size=26), tickfont=dict(size=18)),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=26, color="black"), tickfont=dict(size=18)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=26, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
+    xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
 )
 
 # Add sunrise and sunset times to the plots
