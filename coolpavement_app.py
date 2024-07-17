@@ -101,8 +101,8 @@ for location in set(locations.values()):
         locations_avg[f"{location}_temperature_c"] = pd.DataFrame(avg_temp_c, columns=['Calibrated Temperature (°F)'])
 
 # Calculate the difference between control and cool temperatures
-locations_avg['temperature_difference'] = locations_avg['control_temperature']['Temperature (°F)'] - locations_avg['cool_temperature']['Temperature (°F)']
-locations_avg['temperature_c_difference'] = locations_avg['control_temperature_c']['Calibrated Temperature (°F)'] - locations_avg['cool_temperature_c']['Calibrated Temperature (°F)']
+locations_avg['temperature_difference'] = locations_avg['cool_temperature']['Temperature (°F)'] - locations_avg['control_temperature']['Temperature (°F)']
+locations_avg['temperature_c_difference'] = locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'] - locations_avg['control_temperature_c']['Calibrated Temperature (°F)']
 
 # Function to get sunrise and sunset times
 def get_sun_rise_set_time(date):
@@ -158,14 +158,14 @@ with col3:
 fig1 = go.Figure()
 fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
                          line=dict(color=control_color, width=3, dash='dash')))
-fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Cool Pavement',
+fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Treatment Site',
                          line=dict(color=cool_color, width=3)))
-fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Reference - Cool Pavement)',
+fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Treatment site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig1.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
-    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=20)),
+    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=18)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=18)),
     yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
@@ -173,14 +173,14 @@ fig1.update_layout(
 fig2 = go.Figure()
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Reference (Normal Pavement)',
                          line=dict(color=control_color, width=3, dash='dash')))
-fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Cool Pavement',
+fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Treatment Site',
                          line=dict(color=cool_color, width=3)))
-fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Reference - Cool Pavement)',
+fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=18)),
-    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=14)),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=16)),
+    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=20)),
+    xaxis=dict(titlefont=dict(size=22), tickfont=dict(size=18)),
+    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=22, color="black"), tickfont=dict(size=18)),
     yaxis2=dict(title="Difference (°F)", titlefont=dict(size=22, color="black"), overlaying="y", side="right", tickfont=dict(size=18))
 )
 
