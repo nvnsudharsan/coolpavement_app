@@ -212,8 +212,8 @@ st.plotly_chart(fig2, use_container_width=True)
 #st.plotly_chart(fig2, use_container_width=True)
 
 st.subheader("Thermal Images of the Pavement")
-st.image('/flir/FLIR1350-Visual.jpeg')
-st.image('/flir/FLIR1350.jpeg')
+st.image('flir/FLIR1350-Visual.jpeg')
+st.image('flir/FLIR1350.jpeg')
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
 google_earth_link = 'location.png'  # Ensure this image is in the same directory
