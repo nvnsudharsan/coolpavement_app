@@ -144,13 +144,16 @@ with st.sidebar:
     default_start = min_date
     default_end = default_start + pd.DateOffset(weeks=2)
 
-    date_range = st.date_input("Select date range:", [default_start, default_end])
-    st.write(f'Data available from {min_date} to {max_date}')
+    date_range = st.slider(
+        "Select date range:",
+        min_value=min_date.date(),
+        max_value=max_date.date(),
+        value=(default_start.date(), default_end.date()),
+        format="MM/DD/YYYY"
+    )
+    st.write(f'Data available from {min_date.date()} to {max_date.date()}')
 
-    if len(date_range) == 2:
-        start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
-    else:
-        start_date, end_date = default_start, default_end
+    start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
 
     # Color selection
     default_colors = {
@@ -212,7 +215,7 @@ def display_image(image_path, caption=None):
 
 st.subheader("Thermal Images of the Pavement")
 display_image('flir/FLIR1350-Visual.jpeg')
-display_image('flir/FLIR1350.jpg')
+display_image('flir/FLIR1350.jpeg')
 
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
