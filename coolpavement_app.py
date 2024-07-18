@@ -5,6 +5,9 @@ import streamlit as st
 import requests
 import numpy as np
 
+# Set the page configuration
+st.set_page_config(layout="wide")
+
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
@@ -119,55 +122,39 @@ def get_sun_rise_set_time(date):
 # Streamlit App
 st.title("Cool Seal Treatment Project at Austin")
 
-# Date range selector
-min_date = locations_avg['control_temperature'].index.min()
-max_date = locations_avg['control_temperature'].index.max()
-default_start = min_date
-default_end = default_start + pd.DateOffset(weeks=2)
+# Sidebar for date range and color selection
+with st.sidebar:
+    st.header("Filter Options")
+    
+    # Date range selector
+    min_date = locations_avg['control_temperature'].index.min()
+    max_date = locations_avg['control_temperature'].index.max()
+    default_start = min_date
+    default_end = default_start + pd.DateOffset(weeks=2)
 
-date_range = st.date_input("Select date range:", [default_start, default_end])
-st.write(f'Data available from {min_date} to {max_date}')
+    date_range = st.date_input("Select date range:", [default_start, default_end])
+    st.write(f'Data available from {min_date} to {max_date}')
 
-if len(date_range) == 2:
-    start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
-else:
-    start_date, end_date = default_start, default_end
+    if len(date_range) == 2:
+        start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
+    else:
+        start_date, end_date = default_start, default_end
+
+    # Color selection
+    default_colors = {
+        'control': '#FF0000',
+        'cool': '#636EF4',
+        'difference': '#000000'
+    }
+
+    st.header("Color Options")
+    control_color = st.color_picker("Reference", default_colors['control'])
+    cool_color = st.color_picker("Treatment area", default_colors['cool'])
+    difference_color = st.color_picker("Difference", default_colors['difference'])
 
 # Filter data based on selected date range
 for key in ['control_temperature', 'cool_temperature', 'control_temperature_c', 'cool_temperature_c', 'temperature_difference', 'temperature_c_difference']:
     locations_avg[key] = locations_avg[key][(locations_avg[key].index >= start_date) & (locations_avg[key].index <= end_date)]
-
-# Default colors
-default_colors = {
-    'control': '#FF0000',
-    'cool': '#636EF4',
-    'difference': '#000000'
-}
-
-# Color selection
-col1, col2, col3 = st.columns(3)
-with col1:
-    control_color = st.color_picker("Reference", default_colors['control'])
-with col2:
-    cool_color = st.color_picker("Treatment area", default_colors['cool'])
-with col3:
-    difference_color = st.color_picker("Difference", default_colors['difference'])
-
-
-# Plot control and cool pavement temperatures
-#fig1 = go.Figure()
-#fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
-#                         line=dict(color=control_color, width=3, dash='dash')))
-#fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Treatment Site',
- #                        line=dict(color=cool_color, width=3)))
-#fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Treatment site - Reference)',
-#                         line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
-#fig1.update_layout(
-#    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
-#    xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
-#    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
- #   yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
-#)
 
 # Plot calibrated control and cool pavement temperatures
 fig2 = go.Figure()
@@ -189,17 +176,13 @@ daily_profile = locations_avg['control_temperature']
 date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
-    #fig1.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
     fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
     if i == 0:
-        #fig1.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
     if i != len(date_list) - 1:
         next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
-        #fig1.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
     else:
-        #fig1.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
 
 # Display plots in Streamlit app
@@ -207,9 +190,6 @@ st.subheader("Comparison of Air Temperatures recorded in Treatment area and Refe
 st.write('Toggle on or off the lines by clicking on the legends.')
 st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
 st.plotly_chart(fig2, use_container_width=True)
-
-#st.subheader("Control and Cool Pavement Temperatures Not Calibrated for Location")
-#st.plotly_chart(fig2, use_container_width=True)
 
 st.subheader("Thermal Images of the Pavement")
 st.image('flir/FLIR1350-Visual.jpeg')
