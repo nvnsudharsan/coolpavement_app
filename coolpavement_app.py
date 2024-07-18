@@ -12,8 +12,11 @@ st.set_page_config(layout="wide")
 st.markdown(
     """
     <style>
-    .sidebar .sidebar-content {
+    .css-1d391kg {  # This is the class for the sidebar
         background-color: #BF5700;
+    }
+    .stSlider > div:nth-child(1) {
+        color: black;
     }
     </style>
     """,
@@ -146,9 +149,9 @@ with st.sidebar:
 
     date_range = st.slider(
         "Select date range:",
-        min_value=min_date.date(),
-        max_value=max_date.date(),
-        value=(default_start.date(), default_end.date()),
+        min_value=min_date.to_pydatetime(),
+        max_value=max_date.to_pydatetime(),
+        value=(default_start.to_pydatetime(), default_end.to_pydatetime()),
         format="MM/DD/YYYY"
     )
     st.write(f'Data available from {min_date.date()} to {max_date.date()}')
