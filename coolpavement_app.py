@@ -117,7 +117,7 @@ def get_sun_rise_set_time(date):
     return sunrise_time, sunset_time
 
 # Streamlit App
-st.title("Cool Pavement Project at Austin")
+st.title("Cool Seal Treatment Project at Austin")
 
 # Date range selector
 min_date = locations_avg['control_temperature'].index.min()
@@ -149,7 +149,7 @@ col1, col2, col3 = st.columns(3)
 with col1:
     control_color = st.color_picker("Reference", default_colors['control'])
 with col2:
-    cool_color = st.color_picker("Cool Pavement", default_colors['cool'])
+    cool_color = st.color_picker("Treatment area", default_colors['cool'])
 with col3:
     difference_color = st.color_picker("Difference", default_colors['difference'])
 
@@ -203,7 +203,7 @@ for i, date in enumerate(date_list):
         fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
 
 # Display plots in Streamlit app
-st.subheader("Control and Cool Pavement Temperatures")
+st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
 st.write('Toggle on or off the lines by clicking on the legends.')
 st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
 st.plotly_chart(fig2, use_container_width=True)
@@ -212,6 +212,6 @@ st.plotly_chart(fig2, use_container_width=True)
 #st.plotly_chart(fig2, use_container_width=True)
 
 # Embed Google Earth link
-st.subheader("Cool Pavement and Sensor Locations")
+st.subheader("Sensor locations in Treatment and Reference area")
 google_earth_link = 'location.png'  # Ensure this image is in the same directory
 st.image(google_earth_link)
