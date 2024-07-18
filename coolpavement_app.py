@@ -8,6 +8,18 @@ import numpy as np
 # Set the page configuration
 st.set_page_config(layout="wide")
 
+# Custom CSS to change the sidebar color to UT Austin orange
+st.markdown(
+    """
+    <style>
+    .sidebar .sidebar-content {
+        background-color: #BF5700;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
@@ -191,10 +203,17 @@ st.write('Toggle on or off the lines by clicking on the legends.')
 st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
 st.plotly_chart(fig2, use_container_width=True)
 
+# Function to safely display images
+def display_image(image_path, caption=None):
+    if os.path.exists(image_path):
+        st.image(image_path, caption=caption)
+    else:
+        st.warning(f"Image not found: {image_path}")
+
 st.subheader("Thermal Images of the Pavement")
-st.image('flir/FLIR1350-Visual.jpeg')
-st.image('flir/FLIR1350.jpg')
+display_image('flir/FLIR1350-Visual.jpeg')
+display_image('flir/FLIR1350.jpg')
+
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
-google_earth_link = 'location.png'  # Ensure this image is in the same directory
-st.image(google_earth_link)
+display_image('location.png')
