@@ -155,19 +155,19 @@ with col3:
 
 
 # Plot control and cool pavement temperatures
-fig1 = go.Figure()
-fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
-                         line=dict(color=control_color, width=3, dash='dash')))
-fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Treatment Site',
-                         line=dict(color=cool_color, width=3)))
-fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Treatment site - Reference)',
-                         line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
-fig1.update_layout(
-    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
-    xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
-    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
-)
+#fig1 = go.Figure()
+#fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['control_temperature']['Temperature (°F)'], name='Reference (Normal Pavement)',
+#                         line=dict(color=control_color, width=3, dash='dash')))
+#fig1.add_trace(go.Scatter(x=locations_avg['cool_temperature'].index, y=locations_avg['cool_temperature']['Temperature (°F)'], name='Treatment Site',
+ #                        line=dict(color=cool_color, width=3)))
+#fig1.add_trace(go.Scatter(x=locations_avg['control_temperature'].index, y=locations_avg['temperature_difference'], name='Difference (Treatment site - Reference)',
+#                         line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
+#fig1.update_layout(
+#    legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
+#    xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
+#    yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
+ #   yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
+#)
 
 # Plot calibrated control and cool pavement temperatures
 fig2 = go.Figure()
@@ -189,27 +189,27 @@ daily_profile = locations_avg['control_temperature']
 date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
-    fig1.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
+    #fig1.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
     fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
     if i == 0:
-        fig1.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        #fig1.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
     if i != len(date_list) - 1:
         next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
-        fig1.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        #fig1.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
     else:
-        fig1.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+        #fig1.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
         fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
 
 # Display plots in Streamlit app
 st.subheader("Control and Cool Pavement Temperatures")
 st.write('Toggle on or off the lines by clicking on the legends.')
 st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
-st.plotly_chart(fig1, use_container_width=True)
-
-st.subheader("Control and Cool Pavement Temperatures Calibrated for Location")
 st.plotly_chart(fig2, use_container_width=True)
+
+#st.subheader("Control and Cool Pavement Temperatures Not Calibrated for Location")
+#st.plotly_chart(fig2, use_container_width=True)
 
 # Embed Google Earth link
 st.subheader("Cool Pavement and Sensor Locations")
