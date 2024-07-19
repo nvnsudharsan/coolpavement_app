@@ -218,7 +218,7 @@ def display_image(image_path, caption=None):
 
 st.subheader("Thermal Images of the Pavement")
 display_image('flir/FLIR1350-Visual.jpeg')
-display_image('flir/FLIR1350.jpeg')
+display_image('flir/FLIR1350.jpg')
 
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
