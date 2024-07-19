@@ -183,6 +183,7 @@ fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locatio
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
+    height=800,  # Increase the height of the plot
     legend=dict(orientation="h", yanchor="bottom", y=-0.7, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
@@ -216,9 +217,13 @@ def display_image(image_path, caption=None):
     else:
         st.warning(f"Image not found: {image_path}")
 
+# Display images side by side
 st.subheader("Thermal Images of the Pavement")
-display_image('flir/FLIR1350-Visual.jpeg')
-display_image('flir/FLIR1350.jpg')
+col1, col2 = st.columns(2)
+with col1:
+    display_image('flir/FLIR1350-Visual.jpeg')
+with col2:
+    display_image('flir/FLIR1350.jpg')
 
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
