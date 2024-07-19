@@ -152,7 +152,7 @@ with st.sidebar:
     # Date range selector
     min_date = locations_avg['control_temperature'].index.min()
     max_date = locations_avg['control_temperature'].index.max()
-    default_start = min_date
+    default_start = min_date + pd.DateOffset(weeks=1)
     default_end = default_start + pd.DateOffset(weeks=2)
 
     date_range = st.slider(
