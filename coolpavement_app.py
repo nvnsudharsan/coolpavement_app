@@ -183,7 +183,7 @@ fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locatio
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
-    height=1200,  # Increase the height of the plot
+    height=1000,  # Increase the height of the plot
     legend=dict(orientation="h", yanchor="bottom", y=-0.0, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
