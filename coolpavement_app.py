@@ -18,6 +18,14 @@ st.markdown(
     .stSlider > div:nth-child(1) {
         color: black;
     }
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .image-container img {
+        margin: 0 10px;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -219,12 +227,13 @@ def display_image(image_path, caption=None):
 
 # Display images side by side
 st.subheader("Thermal Images of the Pavement")
-col1, col2 = st.columns(2)
-with col1:
-    display_image('flir/FLIR1350-Visual.jpeg')
-with col2:
-    display_image('flir/FLIR1350.jpg')
+st.markdown('<div class="image-container">', unsafe_allow_html=True)
+display_image('flir/FLIR1350-Visual.jpeg')
+display_image('flir/FLIR1350.jpg')
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Embed Google Earth link
 st.subheader("Sensor locations in Treatment and Reference area")
+st.markdown('<div class="image-container">', unsafe_allow_html=True)
 display_image('location.png')
+st.markdown('</div>', unsafe_allow_html=True)
