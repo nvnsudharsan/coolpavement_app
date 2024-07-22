@@ -192,7 +192,7 @@ fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=loca
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
 fig2.update_layout(
     height=1000,  # Increase the height of the plot
-    legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5, font=dict(size=22)),
+    legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
     yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
