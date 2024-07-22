@@ -186,7 +186,7 @@ for key in ['control_temperature', 'cool_temperature', 'control_temperature_c', 
 fig2 = go.Figure()
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['control_temperature_c']['Calibrated Temperature (°F)'], name='Reference (Normal Pavement)',
                          line=dict(color=control_color, width=3, dash='dash')))
-fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Treatment Site (Before the treatment)',
+fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locations_avg['cool_temperature_c']['Calibrated Temperature (°F)'], name='Treatment Site',
                          line=dict(color=cool_color, width=3)))
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
