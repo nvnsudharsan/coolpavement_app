@@ -222,7 +222,7 @@ fig2.update_layout(
     showgrid=False)
 )
 
-# Add sunrise and sunset times with gradient fills and day/night labels
+# Add sunrise and sunset times with gradient fills and day/night shading
 date_list = np.unique(locations_avg['control_temperature'].index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
@@ -231,35 +231,29 @@ for i, date in enumerate(date_list):
     sunrise_time = sunrise_time.tz_localize(None) if sunrise_time.tzinfo is not None else sunrise_time
     sunset_time = sunset_time.tz_localize(None) if sunset_time.tzinfo is not None else sunset_time
 
-    # Add the gradient from night (grey) to day (white) to night (grey)
-    fig2.add_vrect(x0=locations_avg['control_temperature'].index[0], x1=sunrise_time, 
-                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
-    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, 
-                   fillcolor="rgba(255, 255, 255, 0.0)", opacity=0.3, layer="below", line_width=0)
-    fig2.add_vrect(x0=sunset_time, x1=locations_avg['control_temperature'].index[-1], 
-                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
+    # Define colors for day (white) and night (grey) gradients
+    day_colors = ["#e6e6e6", "#f2f2f2", "#ffffff", "#f2f2f2", "#e6e6e6"]
+    night_colors = ["#2b2b2b", "#4c4c4c", "#737373", "#4c4c4c", "#2b2b2b"]
+
+    # Calculate intervals for day and night shading
+    day_intervals = np.linspace(sunrise_time, sunset_time, num=6)
+    night_intervals = np.linspace(locations_avg['control_temperature'].index[0], sunrise_time, num=6)
+
+    # Apply shading for night (before sunrise)
+    for j in range(5):
+        fig2.add_vrect(x0=night_intervals[j], x1=night_intervals[j+1], 
+                       fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
     
-    # Calculate midpoints for annotations
-    day_midpoint = sunrise_time + (sunset_time - sunrise_time) / 2
-    night_start_midpoint = locations_avg['control_temperature'].index[0] + (sunrise_time - locations_avg['control_temperature'].index[0]) / 2
-    night_end_midpoint = sunset_time + (locations_avg['control_temperature'].index[-1] - sunset_time) / 2
-    
-    # Annotate "Day" and "Night" inside the plot and rotate vertically
-    fig2.add_annotation(
-        x=day_midpoint, y=0.5, xref="x", yref="paper",
-        text="Day", showarrow=False, font=dict(size=18), align="center",
-        textangle=-90  # Rotate the text vertically
-    )
-    fig2.add_annotation(
-        x=night_start_midpoint, y=0.5, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center",
-        textangle=-90  # Rotate the text vertically
-    )
-    fig2.add_annotation(
-        x=night_end_midpoint, y=0.5, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center",
-        textangle=-90  # Rotate the text vertically
-    )
+    # Apply shading for day (between sunrise and sunset)
+    for j in range(5):
+        fig2.add_vrect(x0=day_intervals[j], x1=day_intervals[j+1], 
+                       fillcolor=day_colors[j], opacity=0.3, layer="below", line_width=0)
+
+    # Apply shading for night (after sunset)
+    night_intervals = np.linspace(sunset_time, locations_avg['control_temperature'].index[-1], num=6)
+    for j in range(5):
+        fig2.add_vrect(x0=night_intervals[j], x1=night_intervals[j+1], 
+                       fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
 
 # Display plots in Streamlit app
 st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
