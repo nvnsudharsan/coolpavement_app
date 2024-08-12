@@ -235,7 +235,7 @@ for i, date in enumerate(date_list):
     fig2.add_vrect(x0=locations_avg['control_temperature'].index[0], x1=sunrise_time, 
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
     fig2.add_vrect(x0=sunrise_time, x1=sunset_time, 
-                   fillcolor="rgba(255, 255, 255, 0.3)", opacity=0.3, layer="below", line_width=0)
+                   fillcolor="rgba(255, 255, 255, 0.0)", opacity=0.3, layer="below", line_width=0)
     fig2.add_vrect(x0=sunset_time, x1=locations_avg['control_temperature'].index[-1], 
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
     
