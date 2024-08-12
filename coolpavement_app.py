@@ -236,23 +236,23 @@ for i, date in enumerate(date_list):
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
     
     # Calculate midpoints for annotations
-    day_midpoint = sunrise_time + (sunset_time - sunrise_time) / 2
-    night_start_midpoint = daily_profile.index[0] + (sunrise_time - daily_profile.index[0]) / 2
-    night_end_midpoint = sunset_time + (daily_profile.index[-1] - sunset_time) / 2
+    #day_midpoint = sunrise_time + (sunset_time - sunrise_time) / 2
+    #night_start_midpoint = daily_profile.index[0] + (sunrise_time - daily_profile.index[0]) / 2
+    #night_end_midpoint = sunset_time + (daily_profile.index[-1] - sunset_time) / 2
     
     # Annotate "Day" and "Night"
-    fig2.add_annotation(
-        x=day_midpoint, y=1.1, xref="x", yref="paper",
-        text="Day", showarrow=False, font=dict(size=18), align="center"
-    )
-    fig2.add_annotation(
-        x=night_start_midpoint, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
-    )
-    fig2.add_annotation(
-        x=night_end_midpoint, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
-    )
+    #fig2.add_annotation(
+    #    x=day_midpoint, y=1.1, xref="x", yref="paper",
+    #    text="Day", showarrow=False, font=dict(size=18), align="center"
+    #)
+    #fig2.add_annotation(
+    #    x=night_start_midpoint, y=1.1, xref="x", yref="paper",
+    #    text="Night", showarrow=False, font=dict(size=18), align="center"
+    #)
+    #fig2.add_annotation(
+    #    x=night_end_midpoint, y=1.1, xref="x", yref="paper",
+    #    text="Night", showarrow=False, font=dict(size=18), align="center"
+    #)
 
 # Display plots in Streamlit app
 st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
