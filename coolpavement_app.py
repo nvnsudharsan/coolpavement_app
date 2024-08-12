@@ -37,7 +37,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
@@ -213,37 +212,22 @@ fig2.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22),
-    showgrid=False)
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
 )
 
-# Add sunrise and sunset times with gradient fills and day/night labels
+# Add sunrise and sunset times to the plots
 daily_profile = locations_avg['control_temperature']
 date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
-    
-    # Gradient from grey to white (night to day)
-    fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, 
-                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
-    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, 
-                   fillcolor="rgba(255, 255, 255, 0.3)", opacity=0.3, layer="below", line_width=0)
-    fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], 
-                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
-    
-    # Annotate "Day" and "Night"
-    fig2.add_annotation(
-        x=sunrise_time + (sunset_time - sunrise_time) / 2, y=1.1, xref="x", yref="paper",
-        text="Day", showarrow=False, font=dict(size=18), align="center"
-    )
-    fig2.add_annotation(
-        x=sunrise_time - (sunrise_time - daily_profile.index[0]) / 2, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
-    )
-    fig2.add_annotation(
-        x=sunset_time + (daily_profile.index[-1] - sunset_time) / 2, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
-    )
+    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
+    if i == 0:
+        fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    if i != len(date_list) - 1:
+        next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
+        fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    else:
+        fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
 
 # Display plots in Streamlit app
 st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
