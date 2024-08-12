@@ -5,14 +5,14 @@ import streamlit as st
 import requests
 import numpy as np
 
-# Set the page configuration
-st.set_page_config(layout="wide")
+# Set the page configuration with light theme
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 
-# Custom CSS to change the sidebar color to UT Austin orange
+# Custom CSS to change the sidebar color to UT Austin orange and ensure light theme
 st.markdown(
     """
     <style>
-    .css-1d391kg {  # This is the class for the sidebar
+    .css-1d391kg {  /* This is the class for the sidebar */
         background-color: #BF5700;
     }
     .stSlider > div:nth-child(1) {
@@ -26,11 +26,17 @@ st.markdown(
     .image-container img {
         margin: 0 10px;
     }
+    /* Light theme settings */
+    .main {
+        background-color: #ffffff; /* Light theme background */
+    }
+    .stSidebar {
+        background-color: #f8f9fa; /* Light theme sidebar background */
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
-
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
@@ -190,6 +196,17 @@ fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locatio
                          line=dict(color=cool_color, width=3)))
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
+# Add a horizontal line at zero for the difference
+fig2.add_shape(
+    type="line",
+    x0=locations_avg['control_temperature_c'].index.min(),
+    y0=0,
+    x1=locations_avg['control_temperature_c'].index.max(),
+    y1=0,
+    line=dict(color="green", width=5, dash="dash"),
+    yref="y2"  # Make sure the line is drawn on the second y-axis (difference axis)
+)
+
 fig2.update_layout(
     height=1000,  # Increase the height of the plot
     legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
