@@ -5,14 +5,14 @@ import streamlit as st
 import requests
 import numpy as np
 
-# Set the page configuration
-st.set_page_config(layout="wide")
+# Set the page configuration with light theme
+st.set_page_config(layout="wide", initial_sidebar_state="expanded")
 
-# Custom CSS to change the sidebar color to UT Austin orange
+# Custom CSS to change the sidebar color to UT Austin orange and ensure light theme
 st.markdown(
     """
     <style>
-    .css-1d391kg {  # This is the class for the sidebar
+    .css-1d391kg {  /* This is the class for the sidebar */
         background-color: #BF5700;
     }
     .stSlider > div:nth-child(1) {
@@ -26,11 +26,17 @@ st.markdown(
     .image-container img {
         margin: 0 10px;
     }
+    /* Light theme settings */
+    .main {
+        background-color: #ffffff; /* Light theme background */
+    }
+    .stSidebar {
+        background-color: #f8f9fa; /* Light theme sidebar background */
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
-
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
