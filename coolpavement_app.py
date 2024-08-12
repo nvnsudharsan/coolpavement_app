@@ -212,7 +212,8 @@ fig2.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22),
+    showgrid=False)
 )
 
 # Add sunrise and sunset times to the plots
