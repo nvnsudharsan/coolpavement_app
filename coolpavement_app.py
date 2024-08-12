@@ -37,6 +37,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 # Function to find and concatenate Excel files
 def find_and_concat_excel_files(folder_path):
     try:
@@ -212,27 +213,47 @@ fig2.update_layout(
     legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
     xaxis=dict(titlefont=dict(size=30), tickfont=dict(size=22)),
     yaxis=dict(title="Air Temperature (°F)", titlefont=dict(size=30, color="black"), tickfont=dict(size=22)),
-    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22))
+    yaxis2=dict(title="Difference (°F)", titlefont=dict(size=30, color="black"), overlaying="y", side="right", tickfont=dict(size=22),
+    showgrid=False)
 )
 
-# Add sunrise and sunset times to the plots
+# Add sunrise and sunset times with gradient fills and day/night labels
 daily_profile = locations_avg['control_temperature']
 date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
-    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
-    if i == 0:
-        fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
-    if i != len(date_list) - 1:
-        next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
-        fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
-    else:
-        fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    
+    # Add the gradient from night (grey) to day (white) to night (grey)
+    fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, 
+                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
+    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, 
+                   fillcolor="rgba(255, 255, 255, 0.3)", opacity=0.3, layer="below", line_width=0)
+    fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], 
+                   fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
+    
+    # Calculate midpoints for annotations
+    day_midpoint = sunrise_time + (sunset_time - sunrise_time) / 2
+    night_start_midpoint = daily_profile.index[0] + (sunrise_time - daily_profile.index[0]) / 2
+    night_end_midpoint = sunset_time + (daily_profile.index[-1] - sunset_time) / 2
+    
+    # Annotate "Day" and "Night"
+    fig2.add_annotation(
+        x=day_midpoint, y=1.1, xref="x", yref="paper",
+        text="Day", showarrow=False, font=dict(size=18), align="center"
+    )
+    fig2.add_annotation(
+        x=night_start_midpoint, y=1.1, xref="x", yref="paper",
+        text="Night", showarrow=False, font=dict(size=18), align="center"
+    )
+    fig2.add_annotation(
+        x=night_end_midpoint, y=1.1, xref="x", yref="paper",
+        text="Night", showarrow=False, font=dict(size=18), align="center"
+    )
 
 # Display plots in Streamlit app
 st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
 st.write('Toggle on or off the lines by clicking on the legends.')
-st.write('Enlarge the figure by click on the view full screen icon on the top left corner of each figure.')
+st.write('Enlarge the figure by clicking on the view full screen icon on the top left corner of each figure.')
 st.plotly_chart(fig2, use_container_width=True)
 
 # Function to safely display images
