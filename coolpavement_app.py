@@ -21,7 +21,7 @@ st.markdown(
     .image-container {
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: center.
     }
     .image-container img {
         margin: 0 10px;
@@ -117,7 +117,7 @@ for var_name in calibration_corrections.keys():
         
         # Ensure only numeric columns are used for the mean calculation
         numeric_cols = df.select_dtypes(include=[np.number]).columns
-        df = df[numeric_cols].resample('15T').mean()
+        df = df[numeric_cols].resample('15min').mean()
         
         globals()[var_name] = df
 
@@ -149,6 +149,10 @@ def get_sun_rise_set_time(date):
     sunset_time = pd.to_datetime(data['results']['sunset']).tz_convert('US/Central')
     return sunrise_time, sunset_time
 
+# Convert daily_profile.index to timezone-aware datetime
+daily_profile = locations_avg['control_temperature']
+daily_profile.index = daily_profile.index.tz_localize('US/Central')
+
 # Streamlit App
 st.title("Cool Seal Treatment Project at Austin")
 
@@ -157,8 +161,8 @@ with st.sidebar:
     st.header("Filter Options")
     
     # Date range selector
-    min_date = locations_avg['control_temperature'].index.min()
-    max_date = locations_avg['control_temperature'].index.max()
+    min_date = daily_profile.index.min()
+    max_date = daily_profile.index.max()
     default_start = min_date + pd.DateOffset(weeks=1.05)
     default_end = default_start + pd.DateOffset(weeks=2)
 
@@ -218,7 +222,6 @@ fig2.update_layout(
 )
 
 # Add sunrise and sunset times with gradient fills and day/night labels
-daily_profile = locations_avg['control_temperature']
 date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
