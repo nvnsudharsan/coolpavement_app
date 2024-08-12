@@ -149,10 +149,10 @@ def get_sun_rise_set_time(date):
     sunset_time = pd.to_datetime(data['results']['sunset']).tz_convert('US/Central')
     return sunrise_time, sunset_time
 
-# Convert daily_profile.index to timezone-aware datetime if not already
-daily_profile = locations_avg['control_temperature']
-if daily_profile.index.tz is None:
-    daily_profile.index = daily_profile.index.tz_localize('US/Central')
+# Convert daily_profile.index to timezone-naive datetime if they are timezone-aware
+for key in locations_avg.keys():
+    if locations_avg[key].index.tz is not None:
+        locations_avg[key].index = locations_avg[key].index.tz_localize(None)
 
 # Streamlit App
 st.title("Cool Seal Treatment Project at Austin")
@@ -162,8 +162,8 @@ with st.sidebar:
     st.header("Filter Options")
     
     # Date range selector
-    min_date = daily_profile.index.min()
-    max_date = daily_profile.index.max()
+    min_date = locations_avg['control_temperature'].index.min()
+    max_date = locations_avg['control_temperature'].index.max()
     default_start = min_date + pd.DateOffset(weeks=1.05)
     default_end = default_start + pd.DateOffset(weeks=2)
 
@@ -223,22 +223,22 @@ fig2.update_layout(
 )
 
 # Add sunrise and sunset times with gradient fills and day/night labels
-date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
+date_list = np.unique(locations_avg['control_temperature'].index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
     
     # Add the gradient from night (grey) to day (white) to night (grey)
-    fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, 
+    fig2.add_vrect(x0=locations_avg['control_temperature'].index[0], x1=sunrise_time, 
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
     fig2.add_vrect(x0=sunrise_time, x1=sunset_time, 
                    fillcolor="rgba(255, 255, 255, 0.3)", opacity=0.3, layer="below", line_width=0)
-    fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], 
+    fig2.add_vrect(x0=sunset_time, x1=locations_avg['control_temperature'].index[-1], 
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
     
     # Calculate midpoints for annotations
     day_midpoint = sunrise_time + (sunset_time - sunrise_time) / 2
-    night_start_midpoint = daily_profile.index[0] + (sunrise_time - daily_profile.index[0]) / 2
-    night_end_midpoint = sunset_time + (daily_profile.index[-1] - sunset_time) / 2
+    night_start_midpoint = locations_avg['control_temperature'].index[0] + (sunrise_time - locations_avg['control_temperature'].index[0]) / 2
+    night_end_midpoint = sunset_time + (locations_avg['control_temperature'].index[-1] - sunset_time) / 2
     
     # Annotate "Day" and "Night"
     fig2.add_annotation(
