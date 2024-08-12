@@ -222,38 +222,19 @@ fig2.update_layout(
     showgrid=False)
 )
 
-# Add sunrise and sunset times with gradient fills and day/night shading
-date_list = np.unique(locations_avg['control_temperature'].index.strftime('%Y-%m-%d'))
+# Add sunrise and sunset times to the plots
+daily_profile = locations_avg['control_temperature']
+date_list = np.unique(daily_profile.index.strftime('%Y-%m-%d'))
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
-    
-    # Convert sunrise and sunset times to timezone-naive datetime if they are timezone-aware
-    sunrise_time = sunrise_time.tz_localize(None) if sunrise_time.tzinfo is not None else sunrise_time
-    sunset_time = sunset_time.tz_localize(None) if sunset_time.tzinfo is not None else sunset_time
-
-    # Define colors for day (white) and night (grey) gradients
-    day_colors = ["#e6e6e6", "#f2f2f2", "#ffffff", "#f2f2f2", "#e6e6e6"]
-    night_colors = ["#2b2b2b", "#4c4c4c", "#737373", "#4c4c4c", "#2b2b2b"]
-
-    # Calculate intervals for day and night shading
-    day_intervals = pd.date_range(start=sunrise_time, end=sunset_time, periods=6)
-    night_intervals_before = pd.date_range(start=locations_avg['control_temperature'].index[0], end=sunrise_time, periods=6)
-    night_intervals_after = pd.date_range(start=sunset_time, end=locations_avg['control_temperature'].index[-1], periods=6)
-
-    # Apply shading for night (before sunrise)
-    for j in range(5):
-        fig2.add_vrect(x0=night_intervals_before[j], x1=night_intervals_before[j+1], 
-                       fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
-    
-    # Apply shading for day (between sunrise and sunset)
-    for j in range(5):
-        fig2.add_vrect(x0=day_intervals[j], x1=day_intervals[j+1], 
-                       fillcolor=day_colors[j], opacity=0.3, layer="below", line_width=0)
-
-    # Apply shading for night (after sunset)
-    for j in range(5):
-        fig2.add_vrect(x0=night_intervals_after[j], x1=night_intervals_after[j+1], 
-                       fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
+    fig2.add_vrect(x0=sunrise_time, x1=sunset_time, fillcolor="#EF810E", opacity=0.25, layer="below", line_width=0)
+    if i == 0:
+        fig2.add_vrect(x0=daily_profile.index[0], x1=sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    if i != len(date_list) - 1:
+        next_sunrise_time, _ = get_sun_rise_set_time(date_list[i+1])
+        fig2.add_vrect(x0=sunset_time, x1=next_sunrise_time, fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
+    else:
+        fig2.add_vrect(x0=sunset_time, x1=daily_profile.index[-1], fillcolor="#053752", opacity=0.25, layer="below", line_width=0)
 
 # Display plots in Streamlit app
 st.subheader("Comparison of Air Temperatures recorded in Treatment area and Reference")
