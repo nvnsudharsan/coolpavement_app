@@ -149,9 +149,10 @@ def get_sun_rise_set_time(date):
     sunset_time = pd.to_datetime(data['results']['sunset']).tz_convert('US/Central')
     return sunrise_time, sunset_time
 
-# Convert daily_profile.index to timezone-aware datetime
+# Convert daily_profile.index to timezone-aware datetime if not already
 daily_profile = locations_avg['control_temperature']
-daily_profile.index = daily_profile.index.tz_localize('US/Central')
+if daily_profile.index.tz is None:
+    daily_profile.index = daily_profile.index.tz_localize('US/Central')
 
 # Streamlit App
 st.title("Cool Seal Treatment Project at Austin")
