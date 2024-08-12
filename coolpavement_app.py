@@ -236,12 +236,13 @@ for i, date in enumerate(date_list):
     night_colors = ["#2b2b2b", "#4c4c4c", "#737373", "#4c4c4c", "#2b2b2b"]
 
     # Calculate intervals for day and night shading
-    day_intervals = np.linspace(sunrise_time, sunset_time, num=6)
-    night_intervals = np.linspace(locations_avg['control_temperature'].index[0], sunrise_time, num=6)
+    day_intervals = pd.date_range(start=sunrise_time, end=sunset_time, periods=6)
+    night_intervals_before = pd.date_range(start=locations_avg['control_temperature'].index[0], end=sunrise_time, periods=6)
+    night_intervals_after = pd.date_range(start=sunset_time, end=locations_avg['control_temperature'].index[-1], periods=6)
 
     # Apply shading for night (before sunrise)
     for j in range(5):
-        fig2.add_vrect(x0=night_intervals[j], x1=night_intervals[j+1], 
+        fig2.add_vrect(x0=night_intervals_before[j], x1=night_intervals_before[j+1], 
                        fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
     
     # Apply shading for day (between sunrise and sunset)
@@ -250,9 +251,8 @@ for i, date in enumerate(date_list):
                        fillcolor=day_colors[j], opacity=0.3, layer="below", line_width=0)
 
     # Apply shading for night (after sunset)
-    night_intervals = np.linspace(sunset_time, locations_avg['control_temperature'].index[-1], num=6)
     for j in range(5):
-        fig2.add_vrect(x0=night_intervals[j], x1=night_intervals[j+1], 
+        fig2.add_vrect(x0=night_intervals_after[j], x1=night_intervals_after[j+1], 
                        fillcolor=night_colors[j], opacity=0.3, layer="below", line_width=0)
 
 # Display plots in Streamlit app
