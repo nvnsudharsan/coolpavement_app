@@ -174,9 +174,9 @@ with st.sidebar:
         value=(default_start.to_pydatetime(), default_end.to_pydatetime()),
         format="MM/DD/YYYY"
     )
-    #st.write(f'Data available from {min_date.date()} to {max_date.date()}')
-
-    start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
+    # Convert start_date and end_date to timezone-naive datetime if they are timezone-aware
+    start_date = pd.to_datetime(date_range[0]).tz_localize(None)
+    end_date = pd.to_datetime(date_range[1]).tz_localize(None)
 
     # Color selection
     default_colors = {
