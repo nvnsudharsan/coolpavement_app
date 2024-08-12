@@ -203,7 +203,7 @@ fig2.add_shape(
     y0=0,
     x1=locations_avg['control_temperature_c'].index.max(),
     y1=0,
-    line=dict(color="gray", width=2, dash="dash"),
+    line=dict(color="green", width=5, dash="dash"),
     yref="y2"  # Make sure the line is drawn on the second y-axis (difference axis)
 )
 
