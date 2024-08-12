@@ -227,6 +227,10 @@ date_list = np.unique(locations_avg['control_temperature'].index.strftime('%Y-%m
 for i, date in enumerate(date_list):
     sunrise_time, sunset_time = get_sun_rise_set_time(date)
     
+    # Convert sunrise and sunset times to timezone-naive datetime if they are timezone-aware
+    sunrise_time = sunrise_time.tz_localize(None) if sunrise_time.tzinfo is not None else sunrise_time
+    sunset_time = sunset_time.tz_localize(None) if sunset_time.tzinfo is not None else sunset_time
+
     # Add the gradient from night (grey) to day (white) to night (grey)
     fig2.add_vrect(x0=locations_avg['control_temperature'].index[0], x1=sunrise_time, 
                    fillcolor="rgba(128, 128, 128, 0.3)", opacity=0.3, layer="below", line_width=0)
