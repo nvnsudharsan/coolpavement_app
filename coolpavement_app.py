@@ -196,6 +196,17 @@ fig2.add_trace(go.Scatter(x=locations_avg['cool_temperature_c'].index, y=locatio
                          line=dict(color=cool_color, width=3)))
 fig2.add_trace(go.Scatter(x=locations_avg['control_temperature_c'].index, y=locations_avg['temperature_c_difference'], name='Difference (Treatment Site - Reference)',
                          line=dict(color=difference_color, width=4, dash='dot'), yaxis="y2"))
+# Add a horizontal line at zero for the difference
+fig2.add_shape(
+    type="line",
+    x0=locations_avg['control_temperature_c'].index.min(),
+    y0=0,
+    x1=locations_avg['control_temperature_c'].index.max(),
+    y1=0,
+    line=dict(color="gray", width=2, dash="dash"),
+    yref="y2"  # Make sure the line is drawn on the second y-axis (difference axis)
+)
+
 fig2.update_layout(
     height=1000,  # Increase the height of the plot
     legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5, font=dict(size=22)),
