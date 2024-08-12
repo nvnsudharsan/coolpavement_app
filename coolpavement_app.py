@@ -244,18 +244,21 @@ for i, date in enumerate(date_list):
     night_start_midpoint = locations_avg['control_temperature'].index[0] + (sunrise_time - locations_avg['control_temperature'].index[0]) / 2
     night_end_midpoint = sunset_time + (locations_avg['control_temperature'].index[-1] - sunset_time) / 2
     
-    # Annotate "Day" and "Night"
+    # Annotate "Day" and "Night" inside the plot and rotate vertically
     fig2.add_annotation(
-        x=day_midpoint, y=1.1, xref="x", yref="paper",
-        text="Day", showarrow=False, font=dict(size=18), align="center"
+        x=day_midpoint, y=0.5, xref="x", yref="paper",
+        text="Day", showarrow=False, font=dict(size=18), align="center",
+        textangle=-90  # Rotate the text vertically
     )
     fig2.add_annotation(
-        x=night_start_midpoint, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
+        x=night_start_midpoint, y=0.5, xref="x", yref="paper",
+        text="Night", showarrow=False, font=dict(size=18), align="center",
+        textangle=-90  # Rotate the text vertically
     )
     fig2.add_annotation(
-        x=night_end_midpoint, y=1.1, xref="x", yref="paper",
-        text="Night", showarrow=False, font=dict(size=18), align="center"
+        x=night_end_midpoint, y=0.5, xref="x", yref="paper",
+        text="Night", showarrow=False, font=dict(size=18), align="center",
+        textangle=-90  # Rotate the text vertically
     )
 
 # Display plots in Streamlit app
