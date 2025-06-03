@@ -74,7 +74,7 @@ find_and_concat_excel_files(folder_path)
 # Calibration and location corrections
 calibration_corrections = {
     's21471965': -0.014904143,
-    's21479990': -0.093339073,
+    #'s21479990': -0.093339073,
     's21479991': 0.000675938,
     's21479993': -0.035137113,
     's21479994': 0.0,
@@ -83,7 +83,7 @@ calibration_corrections = {
 }
 
 location_corrections = {
-    's21479990': (0.9982, 0.0457),
+    #'s21479990': (0.9982, 0.0457),
     's21479991': (0.9908, 0.2413),
     's21479993': (0.9393, 1.7208),
     's21479994': (0.9996, 0.0111),
@@ -94,7 +94,7 @@ location_corrections = {
 
 locations = {
     's21471965': 'control',
-    's21479990': 'cool',
+    #'s21479990': 'cool',
     's21479991': 'control',
     's21479993': 'cool',
     's21479994': 'cool',
