@@ -125,11 +125,14 @@ st.title("Cool Seal Treatment Project at Austin")
 with st.sidebar:
     st.header("Filter Options")
     if 'control_temperature' in locations_avg:
-        min_date, max_date = locations_avg['control_temperature'].index.min(), locations_avg['control_temperature'].index.max()
+        min_date = locations_avg['control_temperature'].index.min()
+        max_date = locations_avg['control_temperature'].index.max()
+        default_start = min_date + pd.DateOffset(weeks=1.05)
+        default_end = default_start + pd.DateOffset(weeks=2)
         date_range = st.slider("Select date range:", min_value=min_date.to_pydatetime(), max_value=max_date.to_pydatetime(),
-                               value=(min_date + pd.DateOffset(weeks=1.05)).to_pydatetime(),
+                               value=(default_start.to_pydatetime(), default_end.to_pydatetime()),
                                format="MM/DD/YYYY")
-        start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1])
+        start_date, end_date = pd.to_datetime(date_range[0]), pd.to_datetime(date_range[1]) if isinstance(date_range, tuple) else (pd.to_datetime(date_range), pd.to_datetime(date_range))
     else:
         start_date, end_date = None, None
 
