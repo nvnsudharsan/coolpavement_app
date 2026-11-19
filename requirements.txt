@@ -1,10 +1,7 @@
-pandas
+pandas>=2.2
 plotly
 streamlit
 requests
 numpy
 openpyxl
-
-
-
-
+python-calamine
