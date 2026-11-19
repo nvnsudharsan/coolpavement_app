@@ -1,0 +1,15 @@
+[theme]
+base = "light"
+primaryColor = "#bf5700"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f2f4f6"
+textColor = "#1d2126"
+borderColor = "#d6dbe0"
+baseRadius = "0.4rem"
+font = "Barlow:https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&display=swap"
+headingFont = "Barlow Semi Condensed:https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&display=swap"
+headingFontWeights = 600
+
+[theme.sidebar]
+backgroundColor = "#eef1f4"
+secondaryBackgroundColor = "#ffffff"
